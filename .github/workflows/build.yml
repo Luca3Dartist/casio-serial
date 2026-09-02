@@ -12,7 +12,7 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake libusb-1.0-0-dev libpng-dev python3-pip git pkg-config
+          sudo apt-get install -y cmake libusb-1.0-0-dev libpng-dev python3-pip git pkg-config libudisks2-dev
           pip3 install pillow --break-system-packages
 
       - name: Install GiteaPC
@@ -24,8 +24,8 @@ jobs:
       - name: Install Casio Toolchain (Takes 15-20 mins)
         run: |
           export PATH="$HOME/.local/bin:$PATH"
+          yes | giteapc install Lephenixnoir/fxsdk:noudisks2
           yes | giteapc install Lephenixnoir/sh-elf-gcc
-          yes | giteapc install Lephenixnoir/fxsdk
           yes | giteapc install Lephenixnoir/gint
 
       - name: Compile App
