@@ -5,13 +5,18 @@ on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
-    # This is the magic line. It loads a pre-configured Linux environment 
-    # where all the Casio tools are already installed and working.
-    container: manawyrm/fxsdk-docker:latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Fetch Official Setup Action
+        run: git clone https://git.planet-casio.com/Lephenixnoir/setup-fxsdk.git .github/actions/setup-fxsdk
+
+      - name: Setup Casio Toolchain
+        uses: ./.github/actions/setup-fxsdk
+        with:
+          gint-version: latest
 
       - name: Compile App
         run: |
