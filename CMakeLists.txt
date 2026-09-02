@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.15)
+project(serial_test)
+include(FXSDK)
+add_executable(serial_test src/main.c)
+target_link_libraries(serial_test gint-fx)
