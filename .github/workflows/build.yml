@@ -5,32 +5,47 @@ on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Fetch Official Setup Action
-        run: git clone https://git.planet-casio.com/Lephenixnoir/setup-fxsdk.git .github/actions/setup-fxsdk
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake libusb-1.0-0-dev libpng-dev python3-pip git pkg-config \
+          libudisks2-dev libsdl2-dev flex bison texinfo curl wget xz-utils bzip2 patch \
+          libgmp-dev libmpfr-dev libmpc-dev libisl-dev
+          pip3 install pillow --break-system-packages
 
-      - name: Setup Casio Toolchain
-        uses: ./.github/actions/setup-fxsdk
-        with:
-          gint-version: latest
+      - name: Install GiteaPC
+        run: |
+          git clone https://git.planet-casio.com/Lephenixnoir/GiteaPC.git
+          cd GiteaPC
+          yes | python3 giteapc.py install Lephenixnoir/GiteaPC
+
+      - name: Install Casio Toolchain (Takes 15-20 mins)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          yes | giteapc install Lephenixnoir/fxsdk:noudisks2
+          yes | giteapc install Lephenixnoir/sh-elf-binutils
+          yes | giteapc install Lephenixnoir/sh-elf-gcc
+          yes | giteapc install Lephenixnoir/gint
 
       - name: Compile App
         run: |
-          # 1. Create a pristine Casio project structure
+          export PATH="$HOME/.local/bin:$PATH"
+          
+          # 1. Create a pristine Casio project
           fxsdk new fx casio_app
           
           # 2. Overwrite the template code with your actual C code
           cp src/main.c casio_app/src/main.c
           
-          # 3. Enter the folder and build it!
+          # 3. Enter the clean folder and build it!
           cd casio_app
           fxsdk build-fx
           
-          # 4. Move the finished app up so GitHub can upload it
+          # 4. Move the finished app up so GitHub can find it
           cp *.g1a ../
 
       - name: Upload .g1a File
