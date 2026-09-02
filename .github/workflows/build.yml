@@ -12,7 +12,7 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake libusb-1.0-0-dev libpng-dev python3-pip git pkg-config libudisks2-dev
+          sudo apt-get install -y cmake libusb-1.0-0-dev libpng-dev python3-pip git pkg-config libudisks2-dev libsdl2-dev
           pip3 install pillow --break-system-packages
 
       - name: Install GiteaPC
