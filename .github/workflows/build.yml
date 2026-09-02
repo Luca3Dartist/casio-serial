@@ -17,14 +17,13 @@ jobs:
 
       - name: Install GiteaPC
         run: |
-          git clone https://gitea.planet-casio.com/Lephenixnoir/GiteaPC.git
+          git clone https://git.planet-casio.com/Lephenixnoir/GiteaPC.git
           cd GiteaPC
-          python3 giteapc.py install Lephenixnoir/GiteaPC
+          yes | python3 giteapc.py install Lephenixnoir/GiteaPC
 
       - name: Install Casio Toolchain (Takes 15-20 mins)
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          # 'yes' automatically confirms the installation prompts
           yes | giteapc install Lephenixnoir/sh-elf-gcc
           yes | giteapc install Lephenixnoir/fxsdk
           yes | giteapc install Lephenixnoir/gint
