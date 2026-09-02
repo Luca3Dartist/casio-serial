@@ -31,7 +31,19 @@ jobs:
       - name: Compile App
         run: |
           export PATH="$HOME/.local/bin:$PATH"
+          
+          # 1. Create a pristine Casio project
+          fxsdk new fx casio_app
+          
+          # 2. Overwrite the template code with your actual C code
+          cp src/main.c casio_app/src/main.c
+          
+          # 3. Enter the clean folder and build it!
+          cd casio_app
           fxsdk build-fx
+          
+          # 4. Move the finished app up so GitHub can find it
+          cp *.g1a ../
 
       - name: Upload .g1a File
         uses: actions/upload-artifact@v4
