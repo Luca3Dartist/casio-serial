@@ -9,13 +9,30 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Casio Toolchain
-        uses: Lephenixnoir/setup-fxsdk@master
-        with:
-          gint-version: latest
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake libusb-1.0-0-dev libpng-dev python3-pip git pkg-config
+          pip3 install pillow --break-system-packages
+
+      - name: Install GiteaPC
+        run: |
+          git clone https://gitea.planet-casio.com/Lephenixnoir/GiteaPC.git
+          cd GiteaPC
+          python3 giteapc.py install Lephenixnoir/GiteaPC
+
+      - name: Install Casio Toolchain (Takes 15-20 mins)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          # 'yes' automatically confirms the installation prompts
+          yes | giteapc install Lephenixnoir/sh-elf-gcc
+          yes | giteapc install Lephenixnoir/fxsdk
+          yes | giteapc install Lephenixnoir/gint
 
       - name: Compile App
-        run: fxsdk build-fx
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          fxsdk build-fx
 
       - name: Upload .g1a File
         uses: actions/upload-artifact@v4
