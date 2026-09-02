@@ -1,0 +1,24 @@
+name: Build Casio App
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Casio Toolchain
+        uses: Lephenixnoir/setup-fxsdk@master
+        with:
+          gint-version: latest
+
+      - name: Compile App
+        run: fxsdk build-fx
+
+      - name: Upload .g1a File
+        uses: actions/upload-artifact@v4
+        with:
+          name: serial-test-app
+          path: '*.g1a'
